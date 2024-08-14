@@ -7,7 +7,7 @@
 
 #include <flipper_format/flipper_format.h>
 
-#define INFRARED_FILE_TYPE "IR signals file"
+#define INFRARED_FILE_TYPE    "IR signals file"
 #define INFRARED_FILE_VERSION 1
 
 typedef struct {
@@ -36,3 +36,5 @@ bool infrared_utils_read_signal_at_index(
     FuriString* name);
 
 bool infrared_utils_write_signal(FlipperFormat* fffile, InfraredSignal* signal, FuriString* name);
+
+void action_ir_power_otg(bool enable);
