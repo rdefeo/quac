@@ -118,6 +118,7 @@ The settings menu will appear as the last item when you are viewing the "root" d
 * RFID Duration: Changes the length of time a RFID signal is transmitted. Within playlists, this can be overridden per `.rfid` file.
 * NFC Duration: Changes the length of time a NFC signal is transmitted. Within playlists, this can be overridden per `.nfc` file.
 * SubGhz Ext Ant: Whether to try using the external antenna for sub-ghz signals. If this is "Enabled" but no external antenna is attached, or the external antenna can't be accessed, Quac! will fall back to using the internal antenna.
+* IR Ext Ant: Whether to use the external device for IR signals. If enabled, but no external IR device is attached to TX, then the internal IR device will be used.
 * Show Hidden: Will display files and folders that start with a period (`.`)
 * About: Application info
 
