@@ -13,9 +13,6 @@
 
 #include <flipper_format/flipper_format.h>
 
-// ehhhh
-uint32_t num_ir_commands;
-
 void scene_action_ir_list_callback(void* context, uint32_t index) {
     App* app = context;
     view_dispatcher_send_custom_event(app->view_dispatcher, index);
@@ -46,10 +43,11 @@ void scene_action_ir_list_on_enter(void* context) {
             index++;
         }
     }
-    num_ir_commands = index - 1;
 
-    if(index == 1) { // '1' to account for 'IMPORT ALL'
-        FURI_LOG_E(TAG, "Failed to get commands from %s", furi_string_get_cstr(app->temp_str));
+    // Number of IR Commands in file
+    app->temp_u32 = index - 1;
+    if(app->temp_u32 == 0) {
+        FURI_LOG_E(TAG, "Failed to get ANY commands from %s", furi_string_get_cstr(app->temp_str));
         submenu_change_item_label(menu, 0, "No IR cmds!");
     }
 
@@ -75,11 +73,12 @@ bool scene_action_ir_list_on_event(void* context, SceneManagerEvent event) {
         FuriString* file_name = furi_string_alloc(); // new IR file name
 
         do {
+            uint32_t num_imported = 0;
             uint32_t start = index - 1;
             uint32_t end = index;
             if(index == 0) {
                 start = 0;
-                end = num_ir_commands;
+                end = app->temp_u32; // Number of IR Commands in file
             }
             for(uint32_t ir_index = start; ir_index < end; ir_index++) {
                 if(!flipper_format_file_open_existing(
@@ -116,12 +115,21 @@ bool scene_action_ir_list_on_event(void* context, SceneManagerEvent event) {
                 }
                 flipper_format_file_close(fff_data_file);
                 FURI_LOG_I(TAG, "Imported %s", furi_string_get_cstr(name));
+                num_imported++;
             }
-            // Import successful!
+
+            if(num_imported == (end - start)) {
+                // Import successful!
+                notification_message(app->notifications, &sequence_success);
+            } else {
+                FURI_LOG_E(
+                    TAG,
+                    "Error importing IR command(s) from %s",
+                    furi_string_get_cstr(app->temp_str));
+                notification_message(app->notifications, &sequence_error);
+            }
             // Leave the user on this scene, in case they want to import
             // more commands from this IR file
-            notification_message(app->notifications, &sequence_success);
-
         } while(false);
 
         // cleanup
