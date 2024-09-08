@@ -16,7 +16,7 @@
 #include "views/action_menu.h"
 #include "item.h"
 
-#define QUAC_NAME "Quac!"
+#define QUAC_NAME    "Quac!"
 #define QUAC_VERSION "v0.6.3"
 #define QUAC_ABOUT                                    \
     "Quick Action remote control\n" QUAC_VERSION "\n" \
@@ -25,9 +25,12 @@
 
 // Location of our actions and folders
 #define QUAC_SETTINGS_FILENAME ".quac.conf"
-#define QUAC_SETTINGS_PATH APP_DATA_PATH(QUAC_SETTINGS_FILENAME)
+#define QUAC_SETTINGS_PATH     APP_DATA_PATH(QUAC_SETTINGS_FILENAME)
 
-typedef enum { QUAC_APP_PORTRAIT, QUAC_APP_LANDSCAPE } QuacAppLayout;
+typedef enum {
+    QUAC_APP_PORTRAIT,
+    QUAC_APP_LANDSCAPE
+} QuacAppLayout;
 
 typedef struct App {
     SceneManager* scene_manager;
@@ -49,6 +52,7 @@ typedef struct App {
 
     FuriString* temp_str; // used for renames/etc
     char temp_cstr[MAX_NAME_LEN]; // used for renames/etc
+    uint32_t temp_u32;
 
     struct {
         QuacAppLayout layout; // Defaults to Portrait
