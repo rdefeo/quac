@@ -1,3 +1,7 @@
+## 0.7.1
+
+- Updated for firmware SDK 1.1.12
+
 ## 0.7.0
 
 - Addded support for iButton
