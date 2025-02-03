@@ -193,12 +193,20 @@ void action_subghz_tx(void* context, const FuriString* action_path, FuriString* 
 
         subghz_devices_set_frequency(device, frequency);
 
+        // Rewind the format file to ensure we can read the protocol
+        if(!flipper_format_rewind(fff_data_file)) {
+            FURI_LOG_E(TAG, "Rewind error");
+            ACTION_SET_ERROR("SUBGHZ: Rewind error");
+            break;
+        }
+
         // Load Protocol
         if(!flipper_format_read_string(fff_data_file, "Protocol", temp_str)) {
             FURI_LOG_E(TAG, "Missing protocol");
             ACTION_SET_ERROR("SUBGHZ: Missing protocol");
             break;
         }
+        // Is this a dynamic protocol?
 
         SubGhzProtocolStatus status;
         bool is_init_protocol = true;
