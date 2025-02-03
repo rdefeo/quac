@@ -2,7 +2,11 @@
 
 ## Quick Action Remote Control for Flipperzero
 
-[Latest Version: 0.7.1](https://github.com/rdefeo/quac/releases)
+Get the latest version:
+
+* [Flipper Lab](https://lab.flipper.net/apps/quac) - recommended
+* [Latest builds](https://github.com/rdefeo/quac/releases) - manual install
+* Or build yourself with [ufbt](README.md#building)
 
 ![build status badge](https://github.com/rdefeo/quac/actions/workflows/build.yml/badge.svg)
 
@@ -133,7 +137,7 @@ For some errors, Quac! will show an error message on screen. In other cases, it 
 
 * suggestions??
 
-## Building / Install
+## Building
 
 This app is currently built with [ufbt](https://github.com/flipperdevices/flipperzero-ufbt), intended for the stock firmware. I have not tested this on other firmwares. The `.fap` file can be found in the Releases section on the right.
 
