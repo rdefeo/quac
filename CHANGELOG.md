@@ -1,3 +1,7 @@
+## 0.7.2
+
+- Updated for firmware SDK 1.2
+
 ## 0.7.1
 
 - Updated for firmware SDK 1.1.12
