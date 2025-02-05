@@ -45,14 +45,12 @@ void action_subghz_need_save_callback(void* context) {
 void action_subghz_tx(void* context, const FuriString* action_path, FuriString* error) {
     App* app = context;
     const char* file_name = furi_string_get_cstr(action_path);
-    // uint32_t device_ind = app->settings.subghz_use_ext_antenna ? 1 : 0;
 
     FlipperFormat* fff_data_file = flipper_format_file_alloc(app->storage);
 
     SubGhzTxRx* txrx = subghz_txrx_alloc();
 
     SubGhzNeedSaveContext save_context = {app, txrx, action_path};
-
     subghz_txrx_set_need_save_callback(txrx, action_subghz_need_save_callback, &save_context);
 
     Stream* fff_data_stream = flipper_format_get_raw_stream(subghz_txrx_get_fff_data(txrx));
@@ -161,7 +159,6 @@ void action_subghz_tx(void* context, const FuriString* action_path, FuriString* 
             FURI_LOG_E(TAG, "Protocol not found: %s", furi_string_get_cstr(protocol_name));
             break;
         }
-
     } while(false);
 
     flipper_format_file_close(fff_data_file);
@@ -171,7 +168,7 @@ void action_subghz_tx(void* context, const FuriString* action_path, FuriString* 
         FURI_LOG_E(TAG, "Failed to start TX");
     }
 
-    // TODO: This should be based on a Setting, yes?
+    // TODO: Should this be based on a Setting?
     furi_delay_ms(100);
 
     FURI_LOG_I(TAG, "SUBGHZ: Action complete.");
