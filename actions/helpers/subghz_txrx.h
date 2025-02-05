@@ -334,8 +334,3 @@ const char* subghz_txrx_radio_device_get_name(SubGhzTxRx* instance);
 * @return bool True if the frequency is valid
 */
 bool subghz_txrx_radio_device_is_frequecy_valid(SubGhzTxRx* instance, uint32_t frequency);
-
-// Quac! BEGIN
-bool subghz_txrx_device_is_async_complete_tx(SubGhzTxRx* instance);
-SubGhzWorker* subghz_txrx_get_subghz_worker(SubGhzTxRx* instance);
-// Quac! END
