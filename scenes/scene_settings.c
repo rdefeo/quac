@@ -19,7 +19,7 @@
 // dynamically know it's list index for our on_event method. However, we'll need to
 // hardcode the value..
 // TODO: Figure out a better way to do this
-#define SCENE_SETTINGS_ABOUT 9 // 10 items in our Settings list, so last index is 9
+#define SCENE_SETTINGS_ABOUT 8 // 9 items in our Settings list, so last index is 8
 
 static const char* const layout_text[2] = {"Vert", "Horiz"};
 static const uint32_t layout_value[2] = {QUAC_APP_PORTRAIT, QUAC_APP_LANDSCAPE};
@@ -94,13 +94,6 @@ static void scene_settings_ibutton_duration_changed(VariableItem* item) {
     app->settings.ibutton_duration = duration_value[index];
 }
 
-static void scene_settings_subghz_ext_changed(VariableItem* item) {
-    App* app = variable_item_get_context(item);
-    uint8_t index = variable_item_get_current_value_index(item);
-    variable_item_set_current_value_text(item, disabled_enabled_text[index]);
-    app->settings.subghz_use_ext_antenna = disabled_enabled_value[index];
-}
-
 static void scene_settings_ir_ext_changed(VariableItem* item) {
     App* app = variable_item_get_context(item);
     uint8_t index = variable_item_get_current_value_index(item);
@@ -165,13 +158,6 @@ void scene_settings_on_enter(void* context) {
         value_index_uint32(app->settings.ibutton_duration, duration_value, V_DURATION_COUNT);
     variable_item_set_current_value_index(item, value_index);
     variable_item_set_current_value_text(item, duration_text[value_index]);
-
-    item =
-        variable_item_list_add(vil, "SubGHz Ext Ant", 2, scene_settings_subghz_ext_changed, app);
-    value_index =
-        value_index_uint32(app->settings.subghz_use_ext_antenna, disabled_enabled_value, 2);
-    variable_item_set_current_value_index(item, value_index);
-    variable_item_set_current_value_text(item, disabled_enabled_text[value_index]);
 
     item = variable_item_list_add(vil, "IR Ext Module", 2, scene_settings_ir_ext_changed, app);
     value_index = value_index_uint32(app->settings.ir_use_ext_module, disabled_enabled_value, 2);
