@@ -1,12 +1,5 @@
 // Methods for Sub-GHz transmission
 
-// subghz
-#include <lib/subghz/transmitter.h>
-#include <lib/subghz/devices/devices.h>
-#include <lib/subghz/devices/cc1101_configs.h>
-#include <lib/subghz/protocols/raw.h>
-#include <lib/subghz/subghz_protocol_registry.h>
-
 #include <flipper_format/flipper_format_i.h>
 
 #include "helpers/subghz_txrx.h"
@@ -21,7 +14,7 @@ typedef struct SubGhzNeedSaveContext {
 } SubGhzNeedSaveContext;
 
 void action_subghz_need_save_callback(void* context) {
-    FURI_LOG_I(TAG, "Need save callback!");
+    FURI_LOG_I(TAG, "Saving udpated subghz signal");
     SubGhzNeedSaveContext* savectx = (SubGhzNeedSaveContext*)context;
     FlipperFormat* ff = subghz_txrx_get_fff_data(savectx->txrx);
 
@@ -46,14 +39,12 @@ void action_subghz_need_save_callback(void* context) {
             FURI_LOG_E(TAG, "Error verifying new subghz file after re-save");
             break;
         }
-        FURI_LOG_I(TAG, "SubGhz file re-saved!");
     } while(0);
 }
 
 void action_subghz_tx(void* context, const FuriString* action_path, FuriString* error) {
     App* app = context;
     const char* file_name = furi_string_get_cstr(action_path);
-    uint32_t repeat = app->settings.subghz_repeat; // Defaults to 10 in the CLI
     // uint32_t device_ind = app->settings.subghz_use_ext_antenna ? 1 : 0;
 
     FlipperFormat* fff_data_file = flipper_format_file_alloc(app->storage);
@@ -171,20 +162,11 @@ void action_subghz_tx(void* context, const FuriString* action_path, FuriString* 
             break;
         }
 
-        if(!flipper_format_insert_or_update_uint32(fff_data, "Repeat", &repeat, 1)) {
-            FURI_LOG_E(TAG, "Unable to set repeat");
-            break;
-        }
     } while(false);
 
     flipper_format_file_close(fff_data_file);
     flipper_format_free(fff_data_file);
 
-    // subghz_txrx_stop(txrx);
-    // subghz_txrx_load_decoder_by_name_protocol(txrx, furi_string_get_cstr(protocol_name));
-    // subghz_txrx_set_preset(txrx, furi_string_get_cstr(preset_name), frequency, NULL, 0);
-
-    FURI_LOG_I(TAG, "Starting TX");
     if(subghz_txrx_tx_start(txrx, subghz_txrx_get_fff_data(txrx)) != SubGhzTxRxStartTxStateOk) {
         FURI_LOG_E(TAG, "Failed to start TX");
     }
