@@ -44,6 +44,8 @@ The app does not provide any recording functionality - you must use the existing
 
 The signal files are played back as recorded. During playback/transmit, the LED light will flash blue until the action is complete. For RFID, NFC, and iButton signals, they are continuously played back for their defined durations: RFID - 2.5 seconds, NFC - 1 second, iButton - 1 second. These defaults can be changed in [application Settings](README.md#application-settings).
 
+SubGhz signals that are dynamic (i.e. have rolling codes / counters) will be re-saved on playback, ensuring the persistence of the new counter values. If an External SubGhz antenna is available, it will be used.
+
 ## Signal Organization
 
 The key to organizing your Quac! interface is to organize your `/ext/apps_data/quac` folder structure. The UI is derived directly from the filesystem structure. Every individual file/signal is given a label on screen. And every folder/directory is a logical group of more files/folders. Selecting a group in the UI will show you the contents of that folder. There is no limit on the number of actions or folders - nest as deep as you want!
@@ -127,7 +129,6 @@ The settings menu will appear as the last item when you are viewing the "root" d
 * RFID Duration: Changes the length of time a RFID signal is transmitted. Within playlists, this can be overridden per `.rfid` file.
 * NFC Duration: Changes the length of time a NFC signal is transmitted. Within playlists, this can be overridden per `.nfc` file.
 * iButton Duration: Changes the length of time a iButton signal is transmitted. Within playlists, this can be overridden per `.ibtn` file.
-* SubGhz Ext Ant: Whether to try using the external antenna for sub-ghz signals. If this is "Enabled" but no external antenna is attached, or the external antenna can't be accessed, Quac! will fall back to using the internal antenna.
 * IR Ext Ant: Whether to use the external device for IR signals. If enabled, but no external IR device is attached to TX, then the internal IR device will be used.
 * Show Hidden: Will display files and folders that start with a period (`.`)
 * About: Application info and version

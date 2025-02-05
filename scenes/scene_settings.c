@@ -8,8 +8,6 @@
 #include "quac.h"
 #include "scenes.h"
 #include "scene_settings.h"
-#include "../actions/action.h"
-#include "../views/action_menu.h"
 #include "../quac_settings.h"
 
 #include <lib/toolbox/path.h>

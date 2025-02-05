@@ -1,3 +1,11 @@
+## 0.9.0
+
+- Complete refactor of SubGhz code
+- Supports dynamic SubGhz signals with rolling codes
+- Auto-detect External SubGhz Antenna and use/prefer if available
+- Removed SugGhz External Antenna setting due to new auto-detect feature
+- Removed SubGhz Repeat setting, no longer needed (was non-standard)
+
 ## 0.8
 
 - Added Import Link Here, which creates Quac Link files
