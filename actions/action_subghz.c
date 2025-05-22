@@ -42,6 +42,14 @@ void action_subghz_need_save_callback(void* context) {
     } while(0);
 }
 
+static void action_subghz_raw_end_callback(void* context) {
+    FURI_LOG_I(TAG, "Stopping TX on RAW");
+    furi_assert(context);
+    FuriThread* thread = context;
+
+    furi_thread_flags_set(furi_thread_get_id(thread), 0);
+}
+
 void action_subghz_tx(void* context, const FuriString* action_path, FuriString* error) {
     App* app = context;
     const char* file_name = furi_string_get_cstr(action_path);
@@ -58,6 +66,7 @@ void action_subghz_tx(void* context, const FuriString* action_path, FuriString* 
 
     FuriString* preset_name = furi_string_alloc();
     FuriString* protocol_name = furi_string_alloc();
+    bool is_raw = false;
 
     FuriString* temp_str;
     temp_str = furi_string_alloc();
@@ -143,6 +152,7 @@ void action_subghz_tx(void* context, const FuriString* action_path, FuriString* 
         if(!strcmp(furi_string_get_cstr(protocol_name), "RAW")) {
             subghz_protocol_raw_gen_fff_data(
                 fff_data, file_name, subghz_txrx_radio_device_get_name(txrx));
+            is_raw = true;
         } else {
             stream_copy_full(
                 flipper_format_get_raw_stream(fff_data_file),
@@ -168,8 +178,14 @@ void action_subghz_tx(void* context, const FuriString* action_path, FuriString* 
         FURI_LOG_E(TAG, "Failed to start TX");
     }
 
-    // TODO: Should this be based on a Setting?
-    furi_delay_ms(100);
+    if(is_raw) {
+        subghz_txrx_set_raw_file_encoder_worker_callback_end(
+            txrx, action_subghz_raw_end_callback, furi_thread_get_current());
+        furi_thread_flags_wait(0, FuriFlagWaitAll, FuriWaitForever);
+    } else {
+        // TODO: Should this be based on a Setting?
+        furi_delay_ms(1500);
+    }
 
     FURI_LOG_I(TAG, "SUBGHZ: Action complete.");
 
