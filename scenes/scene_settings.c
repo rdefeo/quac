@@ -71,6 +71,13 @@ static void scene_settings_show_headers_changed(VariableItem* item) {
     app->settings.show_headers = show_offon_value[index];
 }
 
+static void scene_settings_subghz_duration_changed(VariableItem* item) {
+    App* app = variable_item_get_context(item);
+    uint8_t index = variable_item_get_current_value_index(item);
+    variable_item_set_current_value_text(item, duration_text[index]);
+    app->settings.subghz_duration = duration_value[index];
+}
+
 static void scene_settings_rfid_duration_changed(VariableItem* item) {
     App* app = variable_item_get_context(item);
     uint8_t index = variable_item_get_current_value_index(item);
@@ -136,6 +143,13 @@ void scene_settings_on_enter(void* context) {
     value_index = value_index_uint32(app->settings.show_headers, show_offon_value, 2);
     variable_item_set_current_value_index(item, value_index);
     variable_item_set_current_value_text(item, show_offon_text[value_index]);
+
+    item = variable_item_list_add(
+        vil, "SubGhz Duration", V_DURATION_COUNT, scene_settings_subghz_duration_changed, app);
+    value_index =
+        value_index_uint32(app->settings.subghz_duration, duration_value, V_DURATION_COUNT);
+    variable_item_set_current_value_index(item, value_index);
+    variable_item_set_current_value_text(item, duration_text[value_index]);
 
     item = variable_item_list_add(
         vil, "RFID Duration", V_DURATION_COUNT, scene_settings_rfid_duration_changed, app);

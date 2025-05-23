@@ -3,8 +3,6 @@
 #include "item.h"
 #include "action_i.h"
 
-#define MAX_FILE_LEN (size_t)256
-
 void action_ql_resolve(
     void* context,
     const FuriString* action_path,

@@ -90,7 +90,7 @@ You can chain multiple signal playback actions together by creating a playlist. 
 * Comments: lines that start with a `#` are ignored
 * `pause <ms>` on a line will pause the playback by the specified millisecond duration
 * Signal file names can be absolute (full path) or relative to the current directory
-* RFID and NFC files can have an optional duration specified. Simply add a space after the signal's file name, followed by a millisecond duration. This duration will override the Quac! Settings value, just for this one signal.
+* SubGhz, RFID, and NFC files can have an optional duration specified. Simply add a space after the signal's file name, followed by a millisecond duration. This duration will override the Quac! Settings value, just for this one signal.
 
 Errors found in the playlist will halt playback and vibrate the Flipper. Blank lines are ignored.
 
@@ -126,6 +126,7 @@ The settings menu will appear as the last item when you are viewing the "root" d
 * Layout: Switch between Horizontal and Vertical layout
 * Show Icons: Toggles display of all icons
 * Show Headers: Toggles display of header/folder text at the top, giving you room for one more item on screen!
+* SubGhz Duration: Changes the length of time a non-RAW SubGhz signal is trasmitted. This allows for repeated transmissions during the interval. Within playlists, this can be overridden per `.sub` file.
 * RFID Duration: Changes the length of time a RFID signal is transmitted. Within playlists, this can be overridden per `.rfid` file.
 * NFC Duration: Changes the length of time a NFC signal is transmitted. Within playlists, this can be overridden per `.nfc` file.
 * iButton Duration: Changes the length of time a iButton signal is transmitted. Within playlists, this can be overridden per `.ibtn` file.
