@@ -20,18 +20,30 @@ void action_ql_resolve(
                 "Quac Link: Failed to open file %s", furi_string_get_cstr(action_path));
             break;
         }
-        char buffer[MAX_FILE_LEN]; // long enough?
-        size_t bytes_read = storage_file_read(file_link, buffer, MAX_FILE_LEN);
-        if(bytes_read == 0) {
+
+        furi_string_reset(new_path);
+        const size_t file_size = storage_file_size(file_link);
+        size_t bytes_read = 0;
+        while(bytes_read < file_size) {
+            char buffer[65] = {0};
+            const size_t chunk_size = MIN(file_size - bytes_read, sizeof(buffer) - 1);
+            size_t chunk_read = storage_file_read(file_link, buffer, chunk_size);
+            if(chunk_read != chunk_size) break;
+            bytes_read += chunk_read;
+            furi_string_cat_str(new_path, buffer);
+        }
+        furi_string_trim(new_path);
+
+        if(bytes_read != file_size) {
             ACTION_SET_ERROR(
                 "Quac Link: Error reading link file %s", furi_string_get_cstr(action_path));
             break;
         }
-        if(!storage_file_exists(app->storage, buffer)) {
-            ACTION_SET_ERROR("Quac Link: Linked file does not exist! %s", buffer);
+        if(!storage_file_exists(app->storage, furi_string_get_cstr(new_path))) {
+            ACTION_SET_ERROR(
+                "Quac Link: Linked file does not exist! %s", furi_string_get_cstr(new_path));
             break;
         }
-        furi_string_set_strn(new_path, buffer, bytes_read);
     } while(false);
     storage_file_close(file_link);
     storage_file_free(file_link);
