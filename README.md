@@ -78,7 +78,8 @@ Long pressing the `Right` button will launch a settings menu for the currently s
 * **Import Here**: Launches file browser to let you select a signal file from anywhere on the SDcard and then copies it to the current folder.
   * When importing an IR file, you are prompted to select which IR command to import. This individual command is imported as it's own `.ir` file into the current location. You can also select `* IMPORT ALL *` to, well, import all commands.
   * If an Import fails, the Flipperzero will flash red and buzz - this may be caused by a duplicate filename (i.e. that file/IR command already exists in the current folder) or the target file can not be read.
-* **Import Link Here**: Similar to Link Here, but instead of copying the file, it will generate a Quac Link file (`.ql`) which contains the path of the selected file.
+* **Import Link Here**: Similar to Import Here, but instead of copying the file, it will generate a Quac Link file (`.ql`) which contains the path of the selected file. This acts like a symbolic link on linux or other operating systems.
+  * This feature is most useful for dynamic subghz files. Each transmission/playback of those subghz files can result in an incremented counter/value within the signal file. By referring to a single "source of truth" for that signal, then no matter which app is playing back this signal, the original will have its counter updated accordingly. If, instead, you imported the file directly (i.e. copied), then the counters within that file would get out of sync with the original and it will eventually stop working.
   * At this time, you can not create a link to an IR file, as this would need to also include a reference to the specific signal within the target file.
   * You can not create a link to a Quac Link file.
 * **Create Group**: Prompts for the name of a new folder that will be created at that point in the folder structure.
@@ -121,7 +122,7 @@ The list view UI is based on the sorted file and folder order. This is enforced 
 
 ![Settings menu](screenshots/screenshot_2.png)
 
-The settings menu will appear as the last item when you are viewing the "root" directory. Within the settings you can control:
+The settings menu will appear as the last item when you are viewing the "root" (top level) directory. Within the settings you can control:
 
 * Layout: Switch between Horizontal and Vertical layout
 * Show Icons: Toggles display of all icons
