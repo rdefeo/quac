@@ -17,7 +17,7 @@
 // dynamically know it's list index for our on_event method. However, we'll need to
 // hardcode the value..
 // TODO: Figure out a better way to do this
-#define SCENE_SETTINGS_ABOUT 8 // 9 items in our Settings list, so last index is 8
+#define SCENE_SETTINGS_ABOUT 9 // 10 items in our Settings list, so last index is 9
 
 static const char* const layout_text[2] = {"Vert", "Horiz"};
 static const uint32_t layout_value[2] = {QUAC_APP_PORTRAIT, QUAC_APP_LANDSCAPE};

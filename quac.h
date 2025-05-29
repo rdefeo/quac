@@ -17,7 +17,7 @@
 #include "item.h"
 
 #define QUAC_NAME    "Quac!"
-#define QUAC_VERSION "v0.9.0"
+#define QUAC_VERSION "v0.9.1"
 #define QUAC_ABOUT                                    \
     "Quick Action remote control\n" QUAC_VERSION "\n" \
     "github.com/rdefeo/quac"
