@@ -16,6 +16,7 @@ The app does not provide any recording functionality - you can use the existing 
 * In-app file management
 * Playlist support
 * Flexible naming/sorting, hidden file/folder support
+* File linking
 * Customizable UI
 
 ## Signal playback

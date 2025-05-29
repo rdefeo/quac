@@ -1,3 +1,8 @@
+## 0.9.1
+
+- Fixed About screen
+- Updated readme
+
 ## 0.9.0
 
 - Complete refactor of SubGhz code
