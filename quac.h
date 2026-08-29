@@ -3,7 +3,6 @@
 #include <gui/gui.h>
 #include <gui/scene_manager.h>
 #include <gui/view_dispatcher.h>
-#include <gui/scene_manager.h>
 #include <gui/modules/variable_item_list.h>
 #include <gui/modules/submenu.h>
 #include <gui/modules/text_input.h>
@@ -16,7 +15,7 @@
 #include "views/action_menu.h"
 #include "item.h"
 
-#define QUAC_NAME    "Quac!"
+#define QUAC_NAME "Quac!"
 #define QUAC_ABOUT                                    \
     "Quick Action remote control\nv" FAP_VERSION "\n" \
     "github.com/rdefeo/quac"
