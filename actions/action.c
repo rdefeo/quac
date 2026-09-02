@@ -2,7 +2,6 @@
 #include "quac.h"
 #include "item.h"
 #include "action_i.h"
-#include "action_picopass.h"
 
 void action_ql_resolve(
     void* context,

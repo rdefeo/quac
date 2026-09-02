@@ -1,15 +1,11 @@
 // Methods for Picopass (iClass) emulation
 //
 // Picopass cards are emulated by acting as an ISO15693 NFC listener and
-// answering the reader's commands from the saved card data. Unlike the other
-// action types, there is no firmware "worker" that runs for a fixed duration,
-// so we drive the listener directly and stop it after a timeout. Playlists may
-// also pass PICOPASS_TX_MANUAL to wait for a button press before continuing.
+// answering the reader's commands from the saved card data.
 
 #include <furi.h>
 #include <furi_hal.h>
 
-#include <input/input.h>
 #include <storage/storage.h>
 
 #include <nfc/nfc.h>
@@ -17,11 +13,9 @@
 #include <flipper_format/flipper_format.h>
 
 #include "action_i.h"
-#include "action_picopass.h"
 #include "quac.h"
 
 #include <optimized_cipher.h>
-#include <optimized_ikeys.h>
 
 // Picopass constants
 #define PICOPASS_BLOCK_LEN                8
@@ -32,8 +26,9 @@
 #define PICOPASS_SECURE_KC_BLOCK_INDEX    4
 #define PICOPASS_SECURE_EPURSE_BLOCK_INDEX 2
 #define PICOPASS_MAC_LEN                  4
-#define PICOPASS_FUSE_CRYPT10             0x10
-#define PICOPASS_FUSE_CRYPT0              0x00
+#define PICOPASS_FUSE_CRYPT1              0x10
+#define PICOPASS_FUSE_CRYPT0              0x08
+#define PICOPASS_FUSE_CRYPT10             (PICOPASS_FUSE_CRYPT1 | PICOPASS_FUSE_CRYPT0)
 #define PICOPASS_FDT_LISTEN_FC            1000
 #define PICOPASS_LISTENER_BUFFER_SIZE_MAX 255
 
@@ -302,9 +297,6 @@ static NfcCommand picopass_listener_callback(NfcEvent event, void* context) {
             if(emu->state == PicopassListenerStateHalt ||
                emu->state == PicopassListenerStateIdle) {
                 if(memcmp(&received_data[1], csn, PICOPASS_BLOCK_LEN) != 0) {
-                    if(emu->state == PicopassListenerStateActive) {
-                        emu->state = PicopassListenerStateIdle;
-                    }
                     break;
                 }
             } else {
@@ -457,57 +449,24 @@ static void action_picopass_emulator_stop(PicopassEmulator* emu) {
     free(emu);
 }
 
-// Input pubsub callback used when a playlist line specifies "manual"
-static void action_picopass_input_callback(const void* value, void* context) {
-    const InputEvent* event = value;
-    bool* pressed = context;
-    if(event->type == InputTypePress) {
-        *pressed = true;
-    }
-}
+void action_picopass_tx(void* context, const FuriString* action_path, FuriString* error) {
+    App* app = context;
+    int32_t duration_ms = (int32_t) app->settings.picopass_duration;
 
-void action_picopass_tx_duration(
-    void* context,
-    const FuriString* action_path,
-    uint32_t duration_ms,
-    FuriString* error) {
-    PicopassEmulator* emu =
-        action_picopass_emulator_start(context, furi_string_get_cstr(action_path), error);
+    PicopassEmulator* emu = action_picopass_emulator_start(context, furi_string_get_cstr(action_path), error);
     if(!emu) {
         // error already set by emulator_start
         return;
     }
 
-    if(duration_ms == PICOPASS_TX_MANUAL) {
-        // Playlist-only: wait for a button press before continuing
-        FuriPubSub* input = furi_record_open(RECORD_INPUT_EVENTS);
-        volatile bool pressed = false;
-        FuriPubSubSubscription* sub =
-            furi_pubsub_subscribe(input, action_picopass_input_callback, (void*)&pressed);
+    FURI_LOG_I(TAG, "Picopass: Emulating for %ld ms", duration_ms);
 
-        FURI_LOG_I(TAG, "Picopass: Emulating until button press");
-        while(!pressed) {
-            furi_delay_ms(50);
-        }
-
-        furi_pubsub_unsubscribe(input, sub);
-        furi_record_close(RECORD_INPUT_EVENTS);
-    } else {
-        FURI_LOG_I(TAG, "Picopass: Emulating for %lu ms", duration_ms);
-        int32_t time_ms = (int32_t)duration_ms;
-        const int32_t interval_ms = 100;
-        while(time_ms > 0) {
-            furi_delay_ms(interval_ms);
-            time_ms -= interval_ms;
-        }
+    const int32_t interval_ms = 100;
+    while(duration_ms > 0) {
+        furi_delay_ms(interval_ms);
+        duration_ms -= interval_ms;
     }
 
     action_picopass_emulator_stop(emu);
     FURI_LOG_I(TAG, "Picopass: Done");
-}
-
-void action_picopass_tx(void* context, const FuriString* action_path, FuriString* error) {
-    App* app = context;
-    uint32_t duration_ms = app->settings.picopass_duration;
-    action_picopass_tx_duration(context, action_path, duration_ms, error);
 }

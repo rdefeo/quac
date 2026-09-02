@@ -91,11 +91,7 @@ You can chain multiple signal playback actions together by creating a playlist. 
 * Comments: lines that start with a `#` are ignored
 * `pause <ms>` on a line will pause the playback by the specified millisecond duration
 * Signal file names can be absolute (full path) or relative to the current directory
-* SubGhz, RFID, and NFC files can have an optional duration specified. Simply add a space after the signal's file name, followed by a millisecond duration. This duration will override the Quac! Settings value, just for this one signal.
-* Picopass files can have an optional parameter in playlists only (direct taps always use `Picopass Duration` from Settings). Add a space after the `.picopass` file name, followed by one of:
-  * `<nothing>` - emulate for the default `Picopass Duration` from Settings
-  * `<number>` - emulate for that many milliseconds
-  * `manual` - emulate until the user presses any button (handy when you want the playlist to wait for you)
+* SubGhz, RFID, NFC, and Picopass files can have an optional duration specified. Simply add a space after the signal's file name, followed by a millisecond duration. This duration will override the Quac! Settings value, just for this one signal.
 
 Errors found in the playlist will halt playback and vibrate the Flipper. Blank lines are ignored.
 
@@ -115,10 +111,9 @@ pause 2500
 Lava_Lamp.rfid 4000
 Neon_Strobe.nfc
 Front_Gate.picopass 3000
-Side_Door.picopass manual
 ```
 
-The first two `.sub` files live in the `/ext/apps_data/quac` folder, which is where `arrive_home.qpl` is located, and they will not show up in any UI screen since they are hidden (they start with a `.`). Next, we pause the playlist for 2.5 sec. The next two files live elsewhere, but can still be referenced by the playlist since they are specified via absolute path. For the remaining signals: the RFID signal is transmitted for 4000ms, instead of the duration listed in Quac! Settings, followed by an NFC signal which is transmitted for the default duration. The first Picopass signal is emulated for 3000ms, and the last Picopass signal is emulated until you press a button to continue.
+The first two `.sub` files live in the `/ext/apps_data/quac` folder, which is where `arrive_home.qpl` is located, and they will not show up in any UI screen since they are hidden (they start with a `.`). Next, we pause the playlist for 2.5 sec. The next two files live elsewhere, but can still be referenced by the playlist since they are specified via absolute path. For the remaining three signals: the RFID signal is transmitted for 4000ms, instead of the duration listed in Quac! Settings, followed by an NFC signal which is transmitted for the default duration, and a Picopass signal emulated for 3000ms.
 
 ## Sorting and Naming
 
@@ -137,7 +132,7 @@ The settings menu will appear as the last item when you are viewing the "root" (
 * RFID Duration: Changes the length of time a RFID signal is transmitted. Within playlists, this can be overridden per `.rfid` file.
 * NFC Duration: Changes the length of time a NFC signal is transmitted. Within playlists, this can be overridden per `.nfc` file.
 * iButton Duration: Changes the length of time a iButton signal is transmitted. Within playlists, this can be overridden per `.ibtn` file.
-* Picopass Duration: Changes the length of time a Picopass signal is emulated when tapped directly. This is also the default used by playlists, and can be overridden per `.picopass` file (including the playlist-only `manual` keyword).
+* Picopass Duration: Changes the length of time a Picopass signal is emulated. Within playlists, this can be overridden per `.picopass` file.
 * IR Ext Ant: Whether to use the external device for IR signals. If enabled, but no external IR device is attached to TX, then the internal IR device will be used.
 * Show Hidden: Will display files and folders that start with a period (`.`)
 * About: Application info and version
