@@ -17,7 +17,7 @@
 // dynamically know it's list index for our on_event method. However, we'll need to
 // hardcode the value..
 // TODO: Figure out a better way to do this
-#define SCENE_SETTINGS_ABOUT 9 // 10 items in our Settings list, so last index is 9
+#define SCENE_SETTINGS_ABOUT 10 // 11 items in our Settings list, so last index is 10
 
 static const char* const layout_text[2] = {"Vert", "Horiz"};
 static const uint32_t layout_value[2] = {QUAC_APP_PORTRAIT, QUAC_APP_LANDSCAPE};
@@ -99,6 +99,13 @@ static void scene_settings_ibutton_duration_changed(VariableItem* item) {
     app->settings.ibutton_duration = duration_value[index];
 }
 
+static void scene_settings_picopass_duration_changed(VariableItem* item) {
+    App* app = variable_item_get_context(item);
+    uint8_t index = variable_item_get_current_value_index(item);
+    variable_item_set_current_value_text(item, duration_text[index]);
+    app->settings.picopass_duration = duration_value[index];
+}
+
 static void scene_settings_ir_ext_changed(VariableItem* item) {
     App* app = variable_item_get_context(item);
     uint8_t index = variable_item_get_current_value_index(item);
@@ -168,6 +175,13 @@ void scene_settings_on_enter(void* context) {
         vil, "iButton Duration", V_DURATION_COUNT, scene_settings_ibutton_duration_changed, app);
     value_index =
         value_index_uint32(app->settings.ibutton_duration, duration_value, V_DURATION_COUNT);
+    variable_item_set_current_value_index(item, value_index);
+    variable_item_set_current_value_text(item, duration_text[value_index]);
+
+    item = variable_item_list_add(
+        vil, "Picopass Duration", V_DURATION_COUNT, scene_settings_picopass_duration_changed, app);
+    value_index =
+        value_index_uint32(app->settings.picopass_duration, duration_value, V_DURATION_COUNT);
     variable_item_set_current_value_index(item, value_index);
     variable_item_set_current_value_text(item, duration_text[value_index]);
 
