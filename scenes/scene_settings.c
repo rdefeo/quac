@@ -97,7 +97,7 @@ static void scene_settings_ibutton_duration_changed(VariableItem* item) {
     app->settings.ibutton_duration = duration_value[index];
 }
 
-static void scene_settings_picopass_duration_changed(VariableItem* item) {
+static void scene_settings_picopascene_settings_duration_changed(VariableItem* item) {
     App* app = variable_item_get_context(item);
     uint8_t index = variable_item_get_current_value_index(item);
     variable_item_set_current_value_text(item, duration_text[index]);
@@ -135,6 +135,26 @@ static VariableItem* scene_settings_add_item(
     return item;
 }
 
+// Adds an item and initializes its displayed index/text from `current_value`'s
+// position in `values` (mirroring the lookup each *_changed callback does on edit).
+static VariableItem* scene_settings_add_value_item(
+    VariableItemList* vil,
+    uint32_t* item_index,
+    const char* label,
+    uint8_t values_count,
+    VariableItemChangeCallback callback,
+    void* context,
+    uint32_t current_value,
+    const uint32_t* values,
+    const char* const* texts) {
+    VariableItem* item =
+        scene_settings_add_item(vil, item_index, label, values_count, callback, context);
+    uint8_t value_index = value_index_uint32(current_value, values, values_count);
+    variable_item_set_current_value_index(item, value_index);
+    variable_item_set_current_value_text(item, texts[value_index]);
+    return item;
+}
+
 // For each scene, implement handler callbacks
 void scene_settings_on_enter(void* context) {
     App* app = context;
@@ -142,102 +162,121 @@ void scene_settings_on_enter(void* context) {
     VariableItemList* vil = app->vil_settings;
     variable_item_list_reset(vil);
 
-    VariableItem* item;
-    uint8_t value_index;
     uint32_t item_index = 0;
 
-    item = scene_settings_add_item(
-        vil, &item_index, "Layout", 2, scene_settings_layout_changed, app);
-    value_index = value_index_uint32(app->settings.layout, layout_value, 2);
-    variable_item_set_current_value_index(item, value_index);
-    variable_item_set_current_value_text(item, layout_text[value_index]);
+    scene_settings_add_value_item(
+        vil,
+        &item_index,
+        "Layout",
+        2,
+        scene_settings_layout_changed,
+        app,
+        app->settings.layout,
+        layout_value,
+        layout_text);
 
-    item = scene_settings_add_item(
-        vil, &item_index, "Show Icons", 2, scene_settings_show_icons_changed, app);
-    value_index = value_index_uint32(app->settings.show_icons, show_offon_value, 2);
-    variable_item_set_current_value_index(item, value_index);
-    variable_item_set_current_value_text(item, show_offon_text[value_index]);
+    scene_settings_add_value_item(
+        vil,
+        &item_index,
+        "Show Icons",
+        2,
+        scene_settings_show_icons_changed,
+        app,
+        app->settings.show_icons,
+        show_offon_value,
+        show_offon_text);
 
-    item = scene_settings_add_item(
-        vil, &item_index, "Show Headers", 2, scene_settings_show_headers_changed, app);
-    value_index = value_index_uint32(app->settings.show_headers, show_offon_value, 2);
-    variable_item_set_current_value_index(item, value_index);
-    variable_item_set_current_value_text(item, show_offon_text[value_index]);
+    scene_settings_add_value_item(
+        vil,
+        &item_index,
+        "Show Headers",
+        2,
+        scene_settings_show_headers_changed,
+        app,
+        app->settings.show_headers,
+        show_offon_value,
+        show_offon_text);
 
-    item = scene_settings_add_item(
+    scene_settings_add_value_item(
         vil,
         &item_index,
         "SubGhz Duration",
         V_DURATION_COUNT,
         scene_settings_subghz_duration_changed,
-        app);
-    value_index =
-        value_index_uint32(app->settings.subghz_duration, duration_value, V_DURATION_COUNT);
-    variable_item_set_current_value_index(item, value_index);
-    variable_item_set_current_value_text(item, duration_text[value_index]);
+        app,
+        app->settings.subghz_duration,
+        duration_value,
+        duration_text);
 
-    item = scene_settings_add_item(
+    scene_settings_add_value_item(
         vil,
         &item_index,
         "RFID Duration",
         V_DURATION_COUNT,
         scene_settings_rfid_duration_changed,
-        app);
-    value_index =
-        value_index_uint32(app->settings.rfid_duration, duration_value, V_DURATION_COUNT);
-    variable_item_set_current_value_index(item, value_index);
-    variable_item_set_current_value_text(item, duration_text[value_index]);
+        app,
+        app->settings.rfid_duration,
+        duration_value,
+        duration_text);
 
-    item = scene_settings_add_item(
+    scene_settings_add_value_item(
         vil,
         &item_index,
         "NFC Duration",
         V_DURATION_COUNT,
         scene_settings_nfc_duration_changed,
-        app);
-    value_index = value_index_uint32(app->settings.nfc_duration, duration_value, V_DURATION_COUNT);
-    variable_item_set_current_value_index(item, value_index);
-    variable_item_set_current_value_text(item, duration_text[value_index]);
+        app,
+        app->settings.nfc_duration,
+        duration_value,
+        duration_text);
 
-    item = scene_settings_add_item(
+    scene_settings_add_value_item(
         vil,
         &item_index,
         "iButton Duration",
         V_DURATION_COUNT,
         scene_settings_ibutton_duration_changed,
-        app);
-    value_index =
-        value_index_uint32(app->settings.ibutton_duration, duration_value, V_DURATION_COUNT);
-    variable_item_set_current_value_index(item, value_index);
-    variable_item_set_current_value_text(item, duration_text[value_index]);
+        app,
+        app->settings.ibutton_duration,
+        duration_value,
+        duration_text);
 
-    item = scene_settings_add_item(
+    scene_settings_add_value_item(
         vil,
         &item_index,
         "Picopass Duration",
         V_DURATION_COUNT,
-        scene_settings_picopass_duration_changed,
-        app);
-    value_index =
-        value_index_uint32(app->settings.picopass_duration, duration_value, V_DURATION_COUNT);
-    variable_item_set_current_value_index(item, value_index);
-    variable_item_set_current_value_text(item, duration_text[value_index]);
+        scene_settings_picopascene_settings_duration_changed,
+        app,
+        app->settings.picopass_duration,
+        duration_value,
+        duration_text);
 
-    item = scene_settings_add_item(
-        vil, &item_index, "IR Ext Module", 2, scene_settings_ir_ext_changed, app);
-    value_index = value_index_uint32(app->settings.ir_use_ext_module, disabled_enabled_value, 2);
-    variable_item_set_current_value_index(item, value_index);
-    variable_item_set_current_value_text(item, disabled_enabled_text[value_index]);
+    scene_settings_add_value_item(
+        vil,
+        &item_index,
+        "IR Ext Module",
+        2,
+        scene_settings_ir_ext_changed,
+        app,
+        app->settings.ir_use_ext_module,
+        disabled_enabled_value,
+        disabled_enabled_text);
 
-    item = scene_settings_add_item(
-        vil, &item_index, "Show Hidden", 2, scene_settings_show_hidden_changed, app);
-    value_index = value_index_uint32(app->settings.show_hidden, show_offon_value, 2);
-    variable_item_set_current_value_index(item, value_index);
-    variable_item_set_current_value_text(item, show_offon_text[value_index]);
+    scene_settings_add_value_item(
+        vil,
+        &item_index,
+        "Show Hidden",
+        2,
+        scene_settings_show_hidden_changed,
+        app,
+        app->settings.show_hidden,
+        show_offon_value,
+        show_offon_text);
 
     // Last item is always "About"; record its index for scene_settings_on_event
     scene_settings_about_index = item_index;
-    item = scene_settings_add_item(vil, &item_index, "About", 1, NULL, NULL);
+    scene_settings_add_item(vil, &item_index, "About", 1, NULL, NULL);
     variable_item_list_set_enter_callback(vil, scene_settings_enter_callback, app);
 
     view_dispatcher_switch_to_view(app->view_dispatcher, QView_Settings);
